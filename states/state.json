@@ -1,0 +1,1565 @@
+{
+    "version": 3,
+    "terraform_version": "0.11.8",
+    "serial": 14,
+    "lineage": "5fad982a-0a2e-2d7d-5184-2558f958518c",
+    "modules": [
+        {
+            "path": [
+                "root"
+            ],
+            "outputs": {},
+            "resources": {
+                "data.aws_acm_certificate.cert2": {
+                    "type": "aws_acm_certificate",
+                    "depends_on":[],
+                    "primary":{},
+                    "deposed":[],
+                    "provider":"provider.aws"
+                },
+                "aws_acm_certificate.cert": {
+                    "type": "aws_acm_certificate",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "arn:aws:acm:us-west-2:489867994332:certificate/8f4ce4d5-320d-4d2f-8602-99b4a0f0fafb",
+                        "attributes": {
+                            "arn": "arn:aws:acm:us-west-2:489867994332:certificate/8f4ce4d5-320d-4d2f-8602-99b4a0f0fafb",
+                            "domain_name": "vault.us-west-2.accord.ellieservices.com",
+                            "domain_validation_options.#": "1",
+                            "domain_validation_options.0.domain_name": "vault.us-west-2.accord.ellieservices.com",
+                            "domain_validation_options.0.resource_record_name": "_82035b0d9aac08903d62f43423eb333b.vault.us-west-2.accord.ellieservices.com.",
+                            "domain_validation_options.0.resource_record_type": "CNAME",
+                            "domain_validation_options.0.resource_record_value": "_a217bd0c0756f18c14acaf8ea2fe8dba.tljzshvwok.acm-validations.aws.",
+                            "id": "arn:aws:acm:us-west-2:489867994332:certificate/8f4ce4d5-320d-4d2f-8602-99b4a0f0fafb",
+                            "subject_alternative_names.#": "0",
+                            "tags.%": "0",
+                            "validation_emails.#": "0",
+                            "validation_method": "DNS"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_acm_certificate_validation.cert": {
+                    "type": "aws_acm_certificate_validation",
+                    "depends_on": [
+                        "aws_acm_certificate.cert",
+                        "aws_route53_record.cert_validation"
+                    ],
+                    "primary": {
+                        "id": "2018-09-27 01:33:10 +0000 UTC",
+                        "attributes": {
+                            "certificate_arn": "arn:aws:acm:us-west-2:489867994332:certificate/8f4ce4d5-320d-4d2f-8602-99b4a0f0fafb",
+                            "id": "2018-09-27 01:33:10 +0000 UTC",
+                            "validation_record_fqdns.#": "1",
+                            "validation_record_fqdns.2756624084": "_82035b0d9aac08903d62f43423eb333b.vault.us-west-2.accord.ellieservices.com"
+                        },
+                        "meta": {
+                            "e2bfb730-ecaa-11e6-8f88-34363bc7c4c0": {
+                                "create": 2700000000000
+                            }
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_cloudwatch_log_group.accord-vault-log-group": {
+                    "type": "aws_cloudwatch_log_group",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "accord-prod-vault",
+                        "attributes": {
+                            "arn": "arn:aws:logs:us-west-2:489867994332:log-group:accord-prod-vault:*",
+                            "id": "accord-prod-vault",
+                            "kms_key_id": "",
+                            "name": "accord-prod-vault",
+                            "retention_in_days": "5",
+                            "tags.%": "0"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_cloudwatch_log_subscription_filter.accord-vault-logfilter": {
+                    "type": "aws_cloudwatch_log_subscription_filter",
+                    "depends_on": [
+                        "aws_cloudwatch_log_group.accord-vault-log-group",
+                        "aws_lambda_permission.vault-log-permission",
+                        "data.aws_caller_identity.current"
+                    ],
+                    "primary": {
+                        "id": "cwlsf-353473081",
+                        "attributes": {
+                            "destination_arn": "arn:aws:lambda:us-west-2:489867994332:function:logging-prod-cloudwatchLogsNGLogger",
+                            "id": "cwlsf-353473081",
+                            "log_group_name": "accord-prod-vault",
+                            "name": "vault-logfilter-us-west-2-prod"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_dynamodb_table.accord-vault-dynamoDB": {
+                    "type": "aws_dynamodb_table",
+                    "depends_on": [
+                        "aws_iam_instance_profile.ec2-instance-profile"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-us-west-2-prod-dynamoDB",
+                        "attributes": {
+                            "arn": "arn:aws:dynamodb:us-west-2:489867994332:table/em-accord-vault-us-west-2-prod-dynamoDB",
+                            "attribute.#": "2",
+                            "attribute.2557450017.name": "Key",
+                            "attribute.2557450017.type": "S",
+                            "attribute.3332953574.name": "Path",
+                            "attribute.3332953574.type": "S",
+                            "global_secondary_index.#": "0",
+                            "hash_key": "Path",
+                            "id": "em-accord-vault-us-west-2-prod-dynamoDB",
+                            "local_secondary_index.#": "0",
+                            "name": "em-accord-vault-us-west-2-prod-dynamoDB",
+                            "point_in_time_recovery.#": "1",
+                            "point_in_time_recovery.0.enabled": "false",
+                            "range_key": "Key",
+                            "read_capacity": "100",
+                            "server_side_encryption.#": "0",
+                            "stream_arn": "",
+                            "stream_enabled": "false",
+                            "stream_label": "",
+                            "stream_view_type": "",
+                            "tags.%": "0",
+                            "ttl.#": "0",
+                            "write_capacity": "120"
+                        },
+                        "meta": {
+                            "e2bfb730-ecaa-11e6-8f88-34363bc7c4c0": {
+                                "create": 600000000000,
+                                "delete": 600000000000,
+                                "update": 600000000000
+                            },
+                            "schema_version": "1"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_elb.accord-vault-elb": {
+                    "type": "aws_elb",
+                    "depends_on": [
+                        "aws_acm_certificate_validation.cert",
+                        "aws_dynamodb_table.accord-vault-dynamoDB",
+                        "aws_instance.accord-vault-active",
+                        "aws_instance.accord-vault-passive",
+                        "aws_security_group.elb-security-group",
+                        "data.aws_subnet.private_subnet_0",
+                        "data.aws_subnet.private_subnet_1",
+                        "data.aws_subnet.private_subnet_2"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-prod",
+                        "attributes": {
+                            "access_logs.#": "0",
+                            "arn": "arn:aws:elasticloadbalancing:us-west-2:489867994332:loadbalancer/em-accord-vault-prod",
+                            "availability_zones.#": "3",
+                            "availability_zones.2050015877": "us-west-2c",
+                            "availability_zones.221770259": "us-west-2b",
+                            "availability_zones.2487133097": "us-west-2a",
+                            "connection_draining": "false",
+                            "connection_draining_timeout": "300",
+                            "cross_zone_load_balancing": "true",
+                            "dns_name": "internal-em-accord-vault-prod-1475037122.us-west-2.elb.amazonaws.com",
+                            "health_check.#": "1",
+                            "health_check.0.healthy_threshold": "2",
+                            "health_check.0.interval": "30",
+                            "health_check.0.target": "HTTPS:8200/v1/sys/health",
+                            "health_check.0.timeout": "3",
+                            "health_check.0.unhealthy_threshold": "2",
+                            "id": "em-accord-vault-prod",
+                            "idle_timeout": "60",
+                            "instances.#": "2",
+                            "instances.3887995069": "i-0f5d90d896e671d3a",
+                            "instances.4082472300": "i-061689a994756c596",
+                            "internal": "true",
+                            "listener.#": "1",
+                            "listener.3259852002.instance_port": "8200",
+                            "listener.3259852002.instance_protocol": "https",
+                            "listener.3259852002.lb_port": "443",
+                            "listener.3259852002.lb_protocol": "https",
+                            "listener.3259852002.ssl_certificate_id": "arn:aws:acm:us-west-2:489867994332:certificate/8f4ce4d5-320d-4d2f-8602-99b4a0f0fafb",
+                            "name": "em-accord-vault-prod",
+                            "security_groups.#": "1",
+                            "security_groups.4292189700": "sg-0baabac5c7e838128",
+                            "source_security_group": "489867994332/em-accord-vault-us-west-2-prod-elb-sg",
+                            "source_security_group_id": "sg-0baabac5c7e838128",
+                            "subnets.#": "3",
+                            "subnets.2431473127": "subnet-ec877fa7",
+                            "subnets.4067492572": "subnet-baad28e0",
+                            "subnets.784104188": "subnet-e9449a90",
+                            "tags.%": "0",
+                            "zone_id": "Z1H1FL5HABSF5"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_instance_profile.ec2-instance-profile": {
+                    "type": "aws_iam_instance_profile",
+                    "depends_on": [
+                        "aws_iam_role.accord-vault-ec2-role"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-us-west-2-prod-instance-profile",
+                        "attributes": {
+                            "arn": "arn:aws:iam::489867994332:instance-profile/em-accord-vault-us-west-2-prod-instance-profile",
+                            "create_date": "2018-09-27T01:31:55Z",
+                            "id": "em-accord-vault-us-west-2-prod-instance-profile",
+                            "name": "em-accord-vault-us-west-2-prod-instance-profile",
+                            "path": "/",
+                            "role": "em-accord-vault-us-west-2-prod",
+                            "roles.#": "0",
+                            "unique_id": "AIPAJEIGOA2KB6V76IJL2"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_policy.ec2-policy": {
+                    "type": "aws_iam_policy",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "arn:aws:iam::489867994332:policy/ec2-policy-em-accord-vault-us-west-2-prod",
+                        "attributes": {
+                            "arn": "arn:aws:iam::489867994332:policy/ec2-policy-em-accord-vault-us-west-2-prod",
+                            "id": "arn:aws:iam::489867994332:policy/ec2-policy-em-accord-vault-us-west-2-prod",
+                            "name": "ec2-policy-em-accord-vault-us-west-2-prod",
+                            "path": "/",
+                            "policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\" :\n  [\n    {\n      \"Effect\" : \"Allow\",\n      \"Action\" : [\n        \"ec2:RunInstances\",\n        \"ec2:DescribeInstances\",\n        \"dynamodb:DescribeTable\",\n        \"dynamodb:GetItem\",\n        \"dynamodb:BatchWriteItem\",\n        \"dynamodb:UpdateItem\",\n        \"dynamodb:Query\",\n        \"iam:CreateRole\",\n        \"iam:DeleteRole\",\n        \"iam:GetInstanceProfile\",\n        \"iam:GetRole\",\n        \"iam:GetUser\",\n        \"iam:PutRolePolicy\",\n        \"iam:UpdateAssumeRolePolicy\",\n        \"iam:UpdateRoleDescription\",\n        \"sts:AssumeRole\",\n        \"s3:Delete*\",\n        \"s3:GetObject\",\n        \"s3:PutObject\",\n        \"s3:PutObjectAcl\",\n        \"kms:Encrypt\",\n        \"kms:Decrypt\",\n        \"logs:*\"\n      ],\n      \"Resource\" : \"*\"\n    }\n  ]\n}\n"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_policy.sfn_lambda_invoke_policy": {
+                    "type": "aws_iam_policy",
+                    "depends_on": [
+                        "data.aws_iam_policy_document.sfn_lambda_execution_policy_document"
+                    ],
+                    "primary": {
+                        "id": "arn:aws:iam::489867994332:policy/em-accord-vault-sfn-lambda-invoke-policy-us-west-2-prod",
+                        "attributes": {
+                            "arn": "arn:aws:iam::489867994332:policy/em-accord-vault-sfn-lambda-invoke-policy-us-west-2-prod",
+                            "id": "arn:aws:iam::489867994332:policy/em-accord-vault-sfn-lambda-invoke-policy-us-west-2-prod",
+                            "name": "em-accord-vault-sfn-lambda-invoke-policy-us-west-2-prod",
+                            "path": "/",
+                            "policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"lambda:InvokeFunction\",\n      \"Resource\": \"*\"\n    }\n  ]\n}"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_policy_attachment.ec2_role_attach": {
+                    "type": "aws_iam_policy_attachment",
+                    "depends_on": [
+                        "aws_iam_policy.ec2-policy",
+                        "aws_iam_role.accord-vault-ec2-role"
+                    ],
+                    "primary": {
+                        "id": "ec2-attachment-em-accord-vault-us-west-2-prod",
+                        "attributes": {
+                            "groups.#": "0",
+                            "id": "ec2-attachment-em-accord-vault-us-west-2-prod",
+                            "name": "ec2-attachment-em-accord-vault-us-west-2-prod",
+                            "policy_arn": "arn:aws:iam::489867994332:policy/ec2-policy-em-accord-vault-us-west-2-prod",
+                            "roles.#": "1",
+                            "roles.3543087527": "em-accord-vault-us-west-2-prod",
+                            "users.#": "0"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_policy_attachment.sfn_lambda_invoke_attachment": {
+                    "type": "aws_iam_policy_attachment",
+                    "depends_on": [
+                        "aws_iam_policy.sfn_lambda_invoke_policy",
+                        "aws_iam_role.sfn_role"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-sfn-lambda-invoke-attachment-us-west-2-prod",
+                        "attributes": {
+                            "groups.#": "0",
+                            "id": "em-accord-vault-sfn-lambda-invoke-attachment-us-west-2-prod",
+                            "name": "em-accord-vault-sfn-lambda-invoke-attachment-us-west-2-prod",
+                            "policy_arn": "arn:aws:iam::489867994332:policy/em-accord-vault-sfn-lambda-invoke-policy-us-west-2-prod",
+                            "roles.#": "1",
+                            "roles.1222258526": "em-accord-vault-sfn-us-west-2-prod",
+                            "users.#": "0"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_role.accord-vault-ec2-role": {
+                    "type": "aws_iam_role",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "em-accord-vault-us-west-2-prod",
+                        "attributes": {
+                            "arn": "arn:aws:iam::489867994332:role/em-accord-vault-us-west-2-prod",
+                            "assume_role_policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
+                            "create_date": "2018-09-27T01:31:54Z",
+                            "description": "",
+                            "force_detach_policies": "false",
+                            "id": "em-accord-vault-us-west-2-prod",
+                            "max_session_duration": "3600",
+                            "name": "em-accord-vault-us-west-2-prod",
+                            "path": "/",
+                            "unique_id": "AROAIXDY6DWTXDDBZHPOK"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_role.lambda_iam": {
+                    "type": "aws_iam_role",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "em-accord-vault-prod-lambda-iam",
+                        "attributes": {
+                            "arn": "arn:aws:iam::489867994332:role/em-accord-vault-prod-lambda-iam",
+                            "assume_role_policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"lambda.amazonaws.com\",\"states.amazonaws.com\"]},\"Action\":\"sts:AssumeRole\"}]}",
+                            "create_date": "2018-09-27T01:31:53Z",
+                            "description": "",
+                            "force_detach_policies": "false",
+                            "id": "em-accord-vault-prod-lambda-iam",
+                            "max_session_duration": "3600",
+                            "name": "em-accord-vault-prod-lambda-iam",
+                            "path": "/",
+                            "unique_id": "AROAJV5VITJ3WTKBLPXZW"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_role.sfn_role": {
+                    "type": "aws_iam_role",
+                    "depends_on": [
+                        "data.aws_iam_policy_document.sfn_assume_role_policy_document"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-sfn-us-west-2-prod",
+                        "attributes": {
+                            "arn": "arn:aws:iam::489867994332:role/em-accord-vault-sfn-us-west-2-prod",
+                            "assume_role_policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"states.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}",
+                            "create_date": "2018-09-27T01:31:53Z",
+                            "description": "",
+                            "force_detach_policies": "false",
+                            "id": "em-accord-vault-sfn-us-west-2-prod",
+                            "max_session_duration": "3600",
+                            "name": "em-accord-vault-sfn-us-west-2-prod",
+                            "path": "/",
+                            "unique_id": "AROAITJQRH47WMMNN7KWC"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_role_policy.ec2_role_policy": {
+                    "type": "aws_iam_role_policy",
+                    "depends_on": [
+                        "aws_iam_role.accord-vault-ec2-role"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-us-west-2-prod:em-accord-vault-ec2_iam_role_policy-us-west-2-prod",
+                        "attributes": {
+                            "id": "em-accord-vault-us-west-2-prod:em-accord-vault-ec2_iam_role_policy-us-west-2-prod",
+                            "name": "em-accord-vault-ec2_iam_role_policy-us-west-2-prod",
+                            "policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\" :\n  [\n    {\n      \"Effect\" : \"Allow\",\n      \"Action\" : [\n        \"ec2:RunInstances\",\n        \"ec2:DescribeInstances\",\n        \"dynamodb:DescribeTable\",\n        \"dynamodb:GetItem\",\n        \"dynamodb:BatchWriteItem\",\n        \"dynamodb:UpdateItem\",\n        \"dynamodb:Query\",\n        \"iam:CreateRole\",\n        \"iam:DeleteRole\",\n        \"iam:GetInstanceProfile\",\n        \"iam:GetRole\",\n        \"iam:GetUser\",\n        \"iam:PutRolePolicy\",\n        \"iam:UpdateAssumeRolePolicy\",\n        \"iam:UpdateRoleDescription\",\n        \"sts:AssumeRole\",\n        \"s3:Delete*\",\n        \"s3:GetObject\",\n        \"s3:PutObject\",\n        \"s3:PutObjectAcl\",\n        \"kms:Encrypt\",\n        \"kms:Decrypt\",\n        \"logs:*\"\n      ],\n      \"Resource\" : \"*\"\n    }\n  ]\n}\n",
+                            "role": "em-accord-vault-us-west-2-prod"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_iam_role_policy.lambda_iam_policy": {
+                    "type": "aws_iam_role_policy",
+                    "depends_on": [
+                        "aws_iam_role.lambda_iam"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-prod-lambda-iam:em-accord-vault-prod-lambda-iam-policy",
+                        "attributes": {
+                            "id": "em-accord-vault-prod-lambda-iam:em-accord-vault-prod-lambda-iam-policy",
+                            "name": "em-accord-vault-prod-lambda-iam-policy",
+                            "policy": "{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Sid\": \"VisualEditor0\",\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"ec2:CreateNetworkInterface\",\n                \"ec2:DeleteNetworkInterface\",\n                \"ec2:DescribeNetworkInterfaces\",\n                \"iam:CreateRole\",\n                \"iam:DeleteRole\",\n                \"iam:DeleteRolePolicy\",\n                \"iam:PutRolePolicy\",\n                \"iam:UpdateAssumeRolePolicy\",\n                \"iam:UpdateRoleDescription\",\n                \"kms:Decrypt\",\n                \"s3:GetObject\",\n                \"s3:ListBucket\",\n                \"states:StartExecution\"\n            ],\n            \"Resource\": \"*\"\n        }\n    ]\n}\n",
+                            "role": "em-accord-vault-prod-lambda-iam"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_instance.accord-vault-active": {
+                    "type": "aws_instance",
+                    "depends_on": [
+                        "aws_iam_instance_profile.ec2-instance-profile",
+                        "aws_security_group.ec2-security-group",
+                        "data.aws_subnet.private_subnet_0",
+                        "data.template_file.active-instance-template"
+                    ],
+                    "primary": {
+                        "id": "i-0f5d90d896e671d3a",
+                        "attributes": {
+                            "ami": "ami-39d39d41",
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:instance/i-0f5d90d896e671d3a",
+                            "associate_public_ip_address": "false",
+                            "availability_zone": "us-west-2a",
+                            "cpu_core_count": "1",
+                            "cpu_threads_per_core": "1",
+                            "credit_specification.#": "1",
+                            "credit_specification.0.cpu_credits": "standard",
+                            "disable_api_termination": "false",
+                            "ebs_block_device.#": "0",
+                            "ebs_optimized": "false",
+                            "ephemeral_block_device.#": "0",
+                            "get_password_data": "false",
+                            "iam_instance_profile": "em-accord-vault-us-west-2-prod-instance-profile",
+                            "id": "i-0f5d90d896e671d3a",
+                            "instance_state": "running",
+                            "instance_type": "t2.micro",
+                            "ipv6_addresses.#": "0",
+                            "key_name": "",
+                            "monitoring": "false",
+                            "network_interface.#": "0",
+                            "network_interface_id": "eni-0fece4f6ada64f028",
+                            "password_data": "",
+                            "placement_group": "",
+                            "primary_network_interface_id": "eni-0fece4f6ada64f028",
+                            "private_dns": "ip-10-193-87-112.us-west-2.compute.internal",
+                            "private_ip": "10.193.87.112",
+                            "public_dns": "",
+                            "public_ip": "",
+                            "root_block_device.#": "1",
+                            "root_block_device.0.delete_on_termination": "true",
+                            "root_block_device.0.iops": "0",
+                            "root_block_device.0.volume_id": "vol-02196f16260cbbbc7",
+                            "root_block_device.0.volume_size": "8",
+                            "root_block_device.0.volume_type": "standard",
+                            "security_groups.#": "0",
+                            "source_dest_check": "true",
+                            "subnet_id": "subnet-e9449a90",
+                            "tags.%": "1",
+                            "tags.Name": "accord-vault-active-us-west-2-prod",
+                            "tenancy": "default",
+                            "user_data": "0f899d4aca0cbbff639f61a429df97a0ee47fb3d",
+                            "volume_tags.%": "0",
+                            "vpc_security_group_ids.#": "1",
+                            "vpc_security_group_ids.2729898830": "sg-088beb15fdef358d1"
+                        },
+                        "meta": {
+                            "e2bfb730-ecaa-11e6-8f88-34363bc7c4c0": {
+                                "create": 600000000000,
+                                "delete": 1200000000000,
+                                "update": 600000000000
+                            },
+                            "schema_version": "1"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_instance.accord-vault-passive": {
+                    "type": "aws_instance",
+                    "depends_on": [
+                        "aws_iam_instance_profile.ec2-instance-profile",
+                        "aws_security_group.ec2-security-group",
+                        "data.aws_subnet.private_subnet_1",
+                        "data.template_file.passive-instance-template"
+                    ],
+                    "primary": {
+                        "id": "i-061689a994756c596",
+                        "attributes": {
+                            "ami": "ami-39d39d41",
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:instance/i-061689a994756c596",
+                            "associate_public_ip_address": "false",
+                            "availability_zone": "us-west-2b",
+                            "cpu_core_count": "1",
+                            "cpu_threads_per_core": "1",
+                            "credit_specification.#": "1",
+                            "credit_specification.0.cpu_credits": "standard",
+                            "disable_api_termination": "false",
+                            "ebs_block_device.#": "0",
+                            "ebs_optimized": "false",
+                            "ephemeral_block_device.#": "0",
+                            "get_password_data": "false",
+                            "iam_instance_profile": "em-accord-vault-us-west-2-prod-instance-profile",
+                            "id": "i-061689a994756c596",
+                            "instance_state": "running",
+                            "instance_type": "t2.micro",
+                            "ipv6_addresses.#": "0",
+                            "key_name": "",
+                            "monitoring": "false",
+                            "network_interface.#": "0",
+                            "network_interface_id": "eni-0d1fb1892e9acc115",
+                            "password_data": "",
+                            "placement_group": "",
+                            "primary_network_interface_id": "eni-0d1fb1892e9acc115",
+                            "private_dns": "ip-10-193-87-152.us-west-2.compute.internal",
+                            "private_ip": "10.193.87.152",
+                            "public_dns": "",
+                            "public_ip": "",
+                            "root_block_device.#": "1",
+                            "root_block_device.0.delete_on_termination": "true",
+                            "root_block_device.0.iops": "0",
+                            "root_block_device.0.volume_id": "vol-07b9aa621f527104b",
+                            "root_block_device.0.volume_size": "8",
+                            "root_block_device.0.volume_type": "standard",
+                            "security_groups.#": "0",
+                            "source_dest_check": "true",
+                            "subnet_id": "subnet-ec877fa7",
+                            "tags.%": "1",
+                            "tags.Name": "accord-vault-passive-us-west-2-prod",
+                            "tenancy": "default",
+                            "user_data": "6b8c48cc496a9db2d36c453125b83c12997a412a",
+                            "volume_tags.%": "0",
+                            "vpc_security_group_ids.#": "1",
+                            "vpc_security_group_ids.2729898830": "sg-088beb15fdef358d1"
+                        },
+                        "meta": {
+                            "e2bfb730-ecaa-11e6-8f88-34363bc7c4c0": {
+                                "create": 600000000000,
+                                "delete": 1200000000000,
+                                "update": 600000000000
+                            },
+                            "schema_version": "1"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_kms_alias.accord-vault-kms-alias": {
+                    "type": "aws_kms_alias",
+                    "depends_on": [
+                        "aws_kms_key.accord-vault-kms-key"
+                    ],
+                    "primary": {
+                        "id": "alias/em-accord-vault-us-west-2-prod",
+                        "attributes": {
+                            "arn": "arn:aws:kms:us-west-2:489867994332:alias/em-accord-vault-us-west-2-prod",
+                            "id": "alias/em-accord-vault-us-west-2-prod",
+                            "name": "alias/em-accord-vault-us-west-2-prod",
+                            "target_key_arn": "arn:aws:kms:us-west-2:489867994332:key/26b5449c-5eff-402e-b87c-d87ea659ed4a",
+                            "target_key_id": "26b5449c-5eff-402e-b87c-d87ea659ed4a"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_kms_key.accord-vault-kms-key": {
+                    "type": "aws_kms_key",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "26b5449c-5eff-402e-b87c-d87ea659ed4a",
+                        "attributes": {
+                            "arn": "arn:aws:kms:us-west-2:489867994332:key/26b5449c-5eff-402e-b87c-d87ea659ed4a",
+                            "description": "KMS key for accord ACL encrytion",
+                            "enable_key_rotation": "false",
+                            "id": "26b5449c-5eff-402e-b87c-d87ea659ed4a",
+                            "is_enabled": "true",
+                            "key_id": "26b5449c-5eff-402e-b87c-d87ea659ed4a",
+                            "key_usage": "ENCRYPT_DECRYPT",
+                            "policy": "{\"Id\":\"key-default-1\",\"Statement\":[{\"Action\":\"kms:*\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::489867994332:root\"},\"Resource\":\"*\",\"Sid\":\"Enable IAM User Permissions\"}],\"Version\":\"2012-10-17\"}",
+                            "tags.%": "0"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_lambda_function.add_user_trigger": {
+                    "type": "aws_lambda_function",
+                    "depends_on": [
+                        "aws_iam_role.lambda_iam",
+                        "aws_route53_record.vault_endpoint",
+                        "aws_sfn_state_machine.add-user-sfn"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-prod-add-user-trigger",
+                        "attributes": {
+                            "arn": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-user-trigger",
+                            "dead_letter_config.#": "0",
+                            "description": "",
+                            "environment.#": "1",
+                            "environment.0.variables.%": "3",
+                            "environment.0.variables.SFN_ARN": "arn:aws:states:us-west-2:489867994332:stateMachine:accord-add-user-us-west-2-prod",
+                            "environment.0.variables.SFN_NAME": "accord-add-user-us-west-2-prod",
+                            "environment.0.variables.VAULT_ENDPOINT": "vault.us-west-2.accord.ellieservices.com",
+                            "filename": "lambdas.zip",
+                            "function_name": "em-accord-vault-prod-add-user-trigger",
+                            "handler": "add_user_trigger.aws_lambda_handler",
+                            "id": "em-accord-vault-prod-add-user-trigger",
+                            "invoke_arn": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-user-trigger/invocations",
+                            "kms_key_arn": "",
+                            "last_modified": "2018-09-27T01:34:29.026+0000",
+                            "memory_size": "128",
+                            "publish": "false",
+                            "qualified_arn": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-user-trigger:$LATEST",
+                            "reserved_concurrent_executions": "0",
+                            "role": "arn:aws:iam::489867994332:role/em-accord-vault-prod-lambda-iam",
+                            "runtime": "python2.7",
+                            "source_code_hash": "UAsg04gcV/rXi86Ebs7dU6Cmo5bxhcjtwOnqVn8Ux04=",
+                            "source_code_size": "1009026",
+                            "tags.%": "0",
+                            "timeout": "3",
+                            "tracing_config.#": "1",
+                            "tracing_config.0.mode": "PassThrough",
+                            "version": "$LATEST",
+                            "vpc_config.#": "0"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_lambda_function.aws_role_provision": {
+                    "type": "aws_lambda_function",
+                    "depends_on": [
+                        "aws_iam_role.lambda_iam"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-prod-role-provision",
+                        "attributes": {
+                            "arn": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-role-provision",
+                            "dead_letter_config.#": "0",
+                            "description": "",
+                            "environment.#": "0",
+                            "filename": "lambdas.zip",
+                            "function_name": "em-accord-vault-prod-role-provision",
+                            "handler": "aws_role_provision.aws_lambda_handler",
+                            "id": "em-accord-vault-prod-role-provision",
+                            "invoke_arn": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-role-provision/invocations",
+                            "kms_key_arn": "",
+                            "last_modified": "2018-09-27T01:32:10.739+0000",
+                            "memory_size": "128",
+                            "publish": "false",
+                            "qualified_arn": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-role-provision:$LATEST",
+                            "reserved_concurrent_executions": "0",
+                            "role": "arn:aws:iam::489867994332:role/em-accord-vault-prod-lambda-iam",
+                            "runtime": "python2.7",
+                            "source_code_hash": "UAsg04gcV/rXi86Ebs7dU6Cmo5bxhcjtwOnqVn8Ux04=",
+                            "source_code_size": "1009026",
+                            "tags.%": "0",
+                            "timeout": "15",
+                            "tracing_config.#": "1",
+                            "tracing_config.0.mode": "PassThrough",
+                            "version": "$LATEST",
+                            "vpc_config.#": "0"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_lambda_function.vault_role_provision": {
+                    "type": "aws_lambda_function",
+                    "depends_on": [
+                        "aws_iam_role.lambda_iam",
+                        "aws_security_group.ec2-security-group",
+                        "data.aws_subnet.private_subnet_0",
+                        "data.aws_subnet.private_subnet_1",
+                        "data.aws_subnet.private_subnet_2"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-prod-add-vault-user",
+                        "attributes": {
+                            "arn": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-vault-user",
+                            "dead_letter_config.#": "0",
+                            "description": "",
+                            "environment.#": "0",
+                            "filename": "lambdas.zip",
+                            "function_name": "em-accord-vault-prod-add-vault-user",
+                            "handler": "vault_role_provision.aws_lambda_handler",
+                            "id": "em-accord-vault-prod-add-vault-user",
+                            "invoke_arn": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-vault-user/invocations",
+                            "kms_key_arn": "",
+                            "last_modified": "2018-09-27T01:32:11.137+0000",
+                            "memory_size": "128",
+                            "publish": "false",
+                            "qualified_arn": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-vault-user:$LATEST",
+                            "reserved_concurrent_executions": "0",
+                            "role": "arn:aws:iam::489867994332:role/em-accord-vault-prod-lambda-iam",
+                            "runtime": "python2.7",
+                            "source_code_hash": "UAsg04gcV/rXi86Ebs7dU6Cmo5bxhcjtwOnqVn8Ux04=",
+                            "source_code_size": "1009026",
+                            "tags.%": "0",
+                            "timeout": "15",
+                            "tracing_config.#": "1",
+                            "tracing_config.0.mode": "PassThrough",
+                            "version": "$LATEST",
+                            "vpc_config.#": "1",
+                            "vpc_config.0.security_group_ids.#": "1",
+                            "vpc_config.0.security_group_ids.2729898830": "sg-088beb15fdef358d1",
+                            "vpc_config.0.subnet_ids.#": "3",
+                            "vpc_config.0.subnet_ids.2431473127": "subnet-ec877fa7",
+                            "vpc_config.0.subnet_ids.4067492572": "subnet-baad28e0",
+                            "vpc_config.0.subnet_ids.784104188": "subnet-e9449a90",
+                            "vpc_config.0.vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_lambda_permission.allow_bucket": {
+                    "type": "aws_lambda_permission",
+                    "depends_on": [
+                        "aws_lambda_function.add_user_trigger",
+                        "aws_s3_bucket.accord-vault-bucket"
+                    ],
+                    "primary": {
+                        "id": "AllowExecutionFromS3Bucket",
+                        "attributes": {
+                            "action": "lambda:InvokeFunction",
+                            "function_name": "em-accord-vault-prod-add-user-trigger",
+                            "id": "AllowExecutionFromS3Bucket",
+                            "principal": "s3.amazonaws.com",
+                            "qualifier": "",
+                            "source_arn": "arn:aws:s3:::em-accord-vault-prod",
+                            "statement_id": "AllowExecutionFromS3Bucket"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_lambda_permission.vault-log-permission": {
+                    "type": "aws_lambda_permission",
+                    "depends_on": [
+                        "aws_cloudwatch_log_group.accord-vault-log-group"
+                    ],
+                    "primary": {
+                        "id": "vault-log-permission-prod",
+                        "attributes": {
+                            "action": "lambda:InvokeFunction",
+                            "function_name": "logging-prod-cloudwatchLogsNGLogger",
+                            "id": "vault-log-permission-prod",
+                            "principal": "logs.us-west-2.amazonaws.com",
+                            "qualifier": "",
+                            "source_arn": "arn:aws:logs:us-west-2:489867994332:log-group:accord-prod-vault:*",
+                            "statement_id": "vault-log-permission-prod"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_route53_record.cert_validation": {
+                    "type": "aws_route53_record",
+                    "depends_on": [
+                        "aws_acm_certificate.cert",
+                        "data.aws_route53_zone.base_zone"
+                    ],
+                    "primary": {
+                        "id": "Z1OR5LT1WEJ4OL__82035b0d9aac08903d62f43423eb333b.vault.us-west-2.accord.ellieservices.com._CNAME",
+                        "attributes": {
+                            "allow_overwrite": "true",
+                            "fqdn": "_82035b0d9aac08903d62f43423eb333b.vault.us-west-2.accord.ellieservices.com",
+                            "id": "Z1OR5LT1WEJ4OL__82035b0d9aac08903d62f43423eb333b.vault.us-west-2.accord.ellieservices.com._CNAME",
+                            "name": "_82035b0d9aac08903d62f43423eb333b.vault.us-west-2.accord.ellieservices.com",
+                            "records.#": "1",
+                            "records.320788065": "_a217bd0c0756f18c14acaf8ea2fe8dba.tljzshvwok.acm-validations.aws.",
+                            "ttl": "60",
+                            "type": "CNAME",
+                            "zone_id": "Z1OR5LT1WEJ4OL"
+                        },
+                        "meta": {
+                            "schema_version": "2"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_route53_record.vault_endpoint": {
+                    "type": "aws_route53_record",
+                    "depends_on": [
+                        "aws_elb.accord-vault-elb",
+                        "data.aws_route53_zone.base_zone"
+                    ],
+                    "primary": {
+                        "id": "Z1OR5LT1WEJ4OL_vault.us-west-2.accord.ellieservices.com_CNAME",
+                        "attributes": {
+                            "allow_overwrite": "true",
+                            "fqdn": "vault.us-west-2.accord.ellieservices.com",
+                            "id": "Z1OR5LT1WEJ4OL_vault.us-west-2.accord.ellieservices.com_CNAME",
+                            "name": "vault.us-west-2.accord.ellieservices.com",
+                            "records.#": "1",
+                            "records.813170560": "internal-em-accord-vault-prod-1475037122.us-west-2.elb.amazonaws.com",
+                            "ttl": "300",
+                            "type": "CNAME",
+                            "zone_id": "Z1OR5LT1WEJ4OL"
+                        },
+                        "meta": {
+                            "schema_version": "2"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_s3_bucket.accord-vault-bucket": {
+                    "type": "aws_s3_bucket",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "em-accord-vault-prod",
+                        "attributes": {
+                            "acceleration_status": "",
+                            "acl": "private",
+                            "arn": "arn:aws:s3:::em-accord-vault-prod",
+                            "bucket": "em-accord-vault-prod",
+                            "bucket_domain_name": "em-accord-vault-prod.s3.amazonaws.com",
+                            "bucket_regional_domain_name": "em-accord-vault-prod.s3.us-west-2.amazonaws.com",
+                            "cors_rule.#": "0",
+                            "force_destroy": "true",
+                            "hosted_zone_id": "Z3BJ6K6RIION7M",
+                            "id": "em-accord-vault-prod",
+                            "logging.#": "0",
+                            "region": "us-west-2",
+                            "replication_configuration.#": "0",
+                            "request_payer": "BucketOwner",
+                            "server_side_encryption_configuration.#": "0",
+                            "tags.%": "0",
+                            "versioning.#": "1",
+                            "versioning.0.enabled": "false",
+                            "versioning.0.mfa_delete": "false",
+                            "website.#": "0"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_s3_bucket_notification.bucket_notification": {
+                    "type": "aws_s3_bucket_notification",
+                    "depends_on": [
+                        "aws_lambda_function.add_user_trigger",
+                        "aws_s3_bucket.accord-vault-bucket"
+                    ],
+                    "primary": {
+                        "id": "em-accord-vault-prod",
+                        "attributes": {
+                            "bucket": "em-accord-vault-prod",
+                            "id": "em-accord-vault-prod",
+                            "lambda_function.#": "1",
+                            "lambda_function.0.events.#": "1",
+                            "lambda_function.0.events.3356830603": "s3:ObjectCreated:*",
+                            "lambda_function.0.filter_prefix": "requests/",
+                            "lambda_function.0.filter_suffix": ".request",
+                            "lambda_function.0.id": "tf-s3-lambda-20180927013429364900000001",
+                            "lambda_function.0.lambda_function_arn": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-user-trigger",
+                            "queue.#": "0",
+                            "topic.#": "0"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_s3_bucket_object.scripts": {
+                    "type": "aws_s3_bucket_object",
+                    "depends_on": [
+                        "aws_s3_bucket.accord-vault-bucket"
+                    ],
+                    "primary": {
+                        "id": "zipfile.zip",
+                        "attributes": {
+                            "acl": "private",
+                            "bucket": "em-accord-vault-prod",
+                            "cache_control": "",
+                            "content_disposition": "",
+                            "content_encoding": "",
+                            "content_language": "",
+                            "content_type": "binary/octet-stream",
+                            "etag": "3d403d8bd2e6ab3c7ab60abcbb75ade2",
+                            "id": "zipfile.zip",
+                            "key": "zipfile.zip",
+                            "server_side_encryption": "",
+                            "source": "./zipfile.zip",
+                            "storage_class": "STANDARD",
+                            "tags.%": "0",
+                            "version_id": "",
+                            "website_redirect": ""
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_security_group.ec2-security-group": {
+                    "type": "aws_security_group",
+                    "depends_on": [
+                        "data.aws_vpc.elmae"
+                    ],
+                    "primary": {
+                        "id": "sg-088beb15fdef358d1",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:security-group/sg-088beb15fdef358d1",
+                            "description": "Managed by Terraform",
+                            "egress.#": "0",
+                            "id": "sg-088beb15fdef358d1",
+                            "ingress.#": "0",
+                            "name": "em-accord-vault-us-west-2-prod-ec2-sg",
+                            "owner_id": "489867994332",
+                            "revoke_rules_on_delete": "false",
+                            "tags.%": "0",
+                            "vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {
+                            "e2bfb730-ecaa-11e6-8f88-34363bc7c4c0": {
+                                "create": 600000000000,
+                                "delete": 600000000000
+                            },
+                            "schema_version": "1"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_security_group.elb-security-group": {
+                    "type": "aws_security_group",
+                    "depends_on": [
+                        "data.aws_vpc.elmae"
+                    ],
+                    "primary": {
+                        "id": "sg-0baabac5c7e838128",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:security-group/sg-0baabac5c7e838128",
+                            "description": "Managed by Terraform",
+                            "egress.#": "0",
+                            "id": "sg-0baabac5c7e838128",
+                            "ingress.#": "0",
+                            "name": "em-accord-vault-us-west-2-prod-elb-sg",
+                            "owner_id": "489867994332",
+                            "revoke_rules_on_delete": "false",
+                            "tags.%": "0",
+                            "vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {
+                            "e2bfb730-ecaa-11e6-8f88-34363bc7c4c0": {
+                                "create": 600000000000,
+                                "delete": 600000000000
+                            },
+                            "schema_version": "1"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_security_group_rule.ec2-egress": {
+                    "type": "aws_security_group_rule",
+                    "depends_on": [
+                        "aws_security_group.ec2-security-group"
+                    ],
+                    "primary": {
+                        "id": "sgrule-2435658971",
+                        "attributes": {
+                            "cidr_blocks.#": "1",
+                            "cidr_blocks.0": "0.0.0.0/0",
+                            "from_port": "0",
+                            "id": "sgrule-2435658971",
+                            "protocol": "-1",
+                            "security_group_id": "sg-088beb15fdef358d1",
+                            "self": "false",
+                            "to_port": "0",
+                            "type": "egress"
+                        },
+                        "meta": {
+                            "schema_version": "2"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_security_group_rule.ec2-ingress": {
+                    "type": "aws_security_group_rule",
+                    "depends_on": [
+                        "aws_security_group.ec2-security-group"
+                    ],
+                    "primary": {
+                        "id": "sgrule-2123855733",
+                        "attributes": {
+                            "cidr_blocks.#": "1",
+                            "cidr_blocks.0": "10.0.0.0/8",
+                            "from_port": "22",
+                            "id": "sgrule-2123855733",
+                            "protocol": "tcp",
+                            "security_group_id": "sg-088beb15fdef358d1",
+                            "self": "false",
+                            "to_port": "22",
+                            "type": "ingress"
+                        },
+                        "meta": {
+                            "schema_version": "2"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_security_group_rule.ec2-ingress-2": {
+                    "type": "aws_security_group_rule",
+                    "depends_on": [
+                        "aws_security_group.ec2-security-group"
+                    ],
+                    "primary": {
+                        "id": "sgrule-2464805413",
+                        "attributes": {
+                            "cidr_blocks.#": "1",
+                            "cidr_blocks.0": "10.0.0.0/8",
+                            "from_port": "8200",
+                            "id": "sgrule-2464805413",
+                            "protocol": "tcp",
+                            "security_group_id": "sg-088beb15fdef358d1",
+                            "self": "false",
+                            "to_port": "8201",
+                            "type": "ingress"
+                        },
+                        "meta": {
+                            "schema_version": "2"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_security_group_rule.elb-egress": {
+                    "type": "aws_security_group_rule",
+                    "depends_on": [
+                        "aws_security_group.elb-security-group"
+                    ],
+                    "primary": {
+                        "id": "sgrule-2465233047",
+                        "attributes": {
+                            "cidr_blocks.#": "1",
+                            "cidr_blocks.0": "0.0.0.0/0",
+                            "from_port": "0",
+                            "id": "sgrule-2465233047",
+                            "protocol": "-1",
+                            "security_group_id": "sg-0baabac5c7e838128",
+                            "self": "false",
+                            "to_port": "0",
+                            "type": "egress"
+                        },
+                        "meta": {
+                            "schema_version": "2"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_security_group_rule.elb-ingress": {
+                    "type": "aws_security_group_rule",
+                    "depends_on": [
+                        "aws_security_group.elb-security-group"
+                    ],
+                    "primary": {
+                        "id": "sgrule-2565701100",
+                        "attributes": {
+                            "cidr_blocks.#": "1",
+                            "cidr_blocks.0": "10.0.0.0/8",
+                            "from_port": "443",
+                            "id": "sgrule-2565701100",
+                            "protocol": "tcp",
+                            "security_group_id": "sg-0baabac5c7e838128",
+                            "self": "false",
+                            "to_port": "443",
+                            "type": "ingress"
+                        },
+                        "meta": {
+                            "schema_version": "2"
+                        },
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "aws_sfn_state_machine.add-user-sfn": {
+                    "type": "aws_sfn_state_machine",
+                    "depends_on": [
+                        "aws_iam_role.sfn_role",
+                        "aws_s3_bucket.accord-vault-bucket",
+                        "data.template_file.add-user-sfn"
+                    ],
+                    "primary": {
+                        "id": "arn:aws:states:us-west-2:489867994332:stateMachine:accord-add-user-us-west-2-prod",
+                        "attributes": {
+                            "creation_date": "2018-09-27T01:32:12Z",
+                            "definition": "{\n  \"Comment\": \"State machine for adding a user to the vault to allow access to consul.\",\n  \"StartAt\": \"AWSRoleProvision\",\n  \"States\": {\n    \"AWSRoleProvision\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-role-provision\",\n      \"Next\": \"VaultRoleProvision\"\n    },\n    \"VaultRoleProvision\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-vault-user\",\n      \"Next\": \"JobComplete\"\n    },\n    \"JobComplete\": {\n      \"Type\": \"Pass\",\n      \"End\": true\n    }\n  }\n}",
+                            "id": "arn:aws:states:us-west-2:489867994332:stateMachine:accord-add-user-us-west-2-prod",
+                            "name": "accord-add-user-us-west-2-prod",
+                            "role_arn": "arn:aws:iam::489867994332:role/em-accord-vault-sfn-us-west-2-prod",
+                            "status": "ACTIVE"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.archive_file.lambda_zip": {
+                    "type": "archive_file",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "3ef9b3caa230c2840f37dfff28ba70723c25d465",
+                        "attributes": {
+                            "id": "3ef9b3caa230c2840f37dfff28ba70723c25d465",
+                            "output_base64sha256": "UAsg04gcV/rXi86Ebs7dU6Cmo5bxhcjtwOnqVn8Ux04=",
+                            "output_md5": "23ed15881c5442c1f51bf847f18454a2",
+                            "output_path": "lambdas.zip",
+                            "output_sha": "3ef9b3caa230c2840f37dfff28ba70723c25d465",
+                            "output_size": "1009026",
+                            "source.#": "0",
+                            "source_dir": "./lambda_fns",
+                            "type": "zip"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.archive"
+                },
+                "data.aws_caller_identity.current": {
+                    "type": "aws_caller_identity",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "2018-09-27 01:31:21.037864969 +0000 UTC",
+                        "attributes": {
+                            "account_id": "489867994332",
+                            "arn": "arn:aws:iam::489867994332:user/em-deploy-tfe-UslG5jTM",
+                            "id": "2018-09-27 01:31:21.037864969 +0000 UTC",
+                            "user_id": "AIDAI4TTADQVOWJTF4VRA"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_iam_policy_document.sfn_assume_role_policy_document": {
+                    "type": "aws_iam_policy_document",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "2478221018",
+                        "attributes": {
+                            "id": "2478221018",
+                            "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRole\",\n      \"Principal\": {\n        \"Service\": \"states.amazonaws.com\"\n      }\n    }\n  ]\n}",
+                            "statement.#": "1",
+                            "statement.0.actions.#": "1",
+                            "statement.0.actions.2528466339": "sts:AssumeRole",
+                            "statement.0.condition.#": "0",
+                            "statement.0.effect": "Allow",
+                            "statement.0.not_actions.#": "0",
+                            "statement.0.not_principals.#": "0",
+                            "statement.0.not_resources.#": "0",
+                            "statement.0.principals.#": "1",
+                            "statement.0.principals.2091813330.identifiers.#": "1",
+                            "statement.0.principals.2091813330.identifiers.2008431988": "states.amazonaws.com",
+                            "statement.0.principals.2091813330.type": "Service",
+                            "statement.0.resources.#": "0",
+                            "statement.0.sid": ""
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_iam_policy_document.sfn_lambda_execution_policy_document": {
+                    "type": "aws_iam_policy_document",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "1116219230",
+                        "attributes": {
+                            "id": "1116219230",
+                            "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"lambda:InvokeFunction\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+                            "statement.#": "1",
+                            "statement.0.actions.#": "1",
+                            "statement.0.actions.3363766922": "lambda:InvokeFunction",
+                            "statement.0.condition.#": "0",
+                            "statement.0.effect": "Allow",
+                            "statement.0.not_actions.#": "0",
+                            "statement.0.not_principals.#": "0",
+                            "statement.0.not_resources.#": "0",
+                            "statement.0.principals.#": "0",
+                            "statement.0.resources.#": "1",
+                            "statement.0.resources.2679715827": "*",
+                            "statement.0.sid": ""
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_route53_zone.base_zone": {
+                    "type": "aws_route53_zone",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "Z1OR5LT1WEJ4OL",
+                        "attributes": {
+                            "caller_reference": "2018-04-17 09:23:47.740777",
+                            "comment": "PC-4019 by akomala",
+                            "id": "Z1OR5LT1WEJ4OL",
+                            "name": "accord.ellieservices.com.",
+                            "name_servers.#": "4",
+                            "name_servers.0": "ns-1956.awsdns-52.co.uk",
+                            "name_servers.1": "ns-920.awsdns-51.net",
+                            "name_servers.2": "ns-229.awsdns-28.com",
+                            "name_servers.3": "ns-1360.awsdns-42.org",
+                            "private_zone": "false",
+                            "resource_record_set_count": "11",
+                            "zone_id": "Z1OR5LT1WEJ4OL"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_subnet.private_subnet_0": {
+                    "type": "aws_subnet",
+                    "depends_on": [
+                        "data.aws_vpc.elmae"
+                    ],
+                    "primary": {
+                        "id": "subnet-e9449a90",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:subnet/subnet-e9449a90",
+                            "assign_ipv6_address_on_creation": "false",
+                            "availability_zone": "us-west-2a",
+                            "cidr_block": "10.193.87.96/27",
+                            "default_for_az": "false",
+                            "filter.#": "1",
+                            "filter.787444477.name": "tag:Name",
+                            "filter.787444477.values.#": "1",
+                            "filter.787444477.values.4259186353": "Private0*",
+                            "id": "subnet-e9449a90",
+                            "map_public_ip_on_launch": "false",
+                            "state": "available",
+                            "tags.%": "1",
+                            "tags.Name": "Private0(us-west-2a)",
+                            "vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_subnet.private_subnet_1": {
+                    "type": "aws_subnet",
+                    "depends_on": [
+                        "data.aws_vpc.elmae"
+                    ],
+                    "primary": {
+                        "id": "subnet-ec877fa7",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:subnet/subnet-ec877fa7",
+                            "assign_ipv6_address_on_creation": "false",
+                            "availability_zone": "us-west-2b",
+                            "cidr_block": "10.193.87.128/27",
+                            "default_for_az": "false",
+                            "filter.#": "1",
+                            "filter.328162125.name": "tag:Name",
+                            "filter.328162125.values.#": "1",
+                            "filter.328162125.values.4229721222": "Private1*",
+                            "id": "subnet-ec877fa7",
+                            "map_public_ip_on_launch": "false",
+                            "state": "available",
+                            "tags.%": "1",
+                            "tags.Name": "Private1(us-west-2b)",
+                            "vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_subnet.private_subnet_2": {
+                    "type": "aws_subnet",
+                    "depends_on": [
+                        "data.aws_vpc.elmae"
+                    ],
+                    "primary": {
+                        "id": "subnet-baad28e0",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:subnet/subnet-baad28e0",
+                            "assign_ipv6_address_on_creation": "false",
+                            "availability_zone": "us-west-2c",
+                            "cidr_block": "10.193.87.160/27",
+                            "default_for_az": "false",
+                            "filter.#": "1",
+                            "filter.1412374941.name": "tag:Name",
+                            "filter.1412374941.values.#": "1",
+                            "filter.1412374941.values.4267365087": "Private2*",
+                            "id": "subnet-baad28e0",
+                            "map_public_ip_on_launch": "false",
+                            "state": "available",
+                            "tags.%": "1",
+                            "tags.Name": "Private2(us-west-2c)",
+                            "vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_subnet.public_subnet_0": {
+                    "type": "aws_subnet",
+                    "depends_on": [
+                        "data.aws_vpc.elmae"
+                    ],
+                    "primary": {
+                        "id": "subnet-fd439d84",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:subnet/subnet-fd439d84",
+                            "assign_ipv6_address_on_creation": "false",
+                            "availability_zone": "us-west-2a",
+                            "cidr_block": "10.193.87.0/27",
+                            "default_for_az": "false",
+                            "filter.#": "1",
+                            "filter.536144450.name": "tag:Name",
+                            "filter.536144450.values.#": "1",
+                            "filter.536144450.values.1414452620": "Public0*",
+                            "id": "subnet-fd439d84",
+                            "map_public_ip_on_launch": "false",
+                            "state": "available",
+                            "tags.%": "1",
+                            "tags.Name": "Public0(us-west-2a)",
+                            "vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_subnet.public_subnet_1": {
+                    "type": "aws_subnet",
+                    "depends_on": [
+                        "data.aws_vpc.elmae"
+                    ],
+                    "primary": {
+                        "id": "subnet-4bf80000",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:subnet/subnet-4bf80000",
+                            "assign_ipv6_address_on_creation": "false",
+                            "availability_zone": "us-west-2b",
+                            "cidr_block": "10.193.87.32/27",
+                            "default_for_az": "false",
+                            "filter.#": "1",
+                            "filter.580174834.name": "tag:Name",
+                            "filter.580174834.values.#": "1",
+                            "filter.580174834.values.1435287483": "Public1*",
+                            "id": "subnet-4bf80000",
+                            "map_public_ip_on_launch": "false",
+                            "state": "available",
+                            "tags.%": "1",
+                            "tags.Name": "Public1(us-west-2b)",
+                            "vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_subnet.public_subnet_2": {
+                    "type": "aws_subnet",
+                    "depends_on": [
+                        "data.aws_vpc.elmae"
+                    ],
+                    "primary": {
+                        "id": "subnet-b4ac29ee",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:subnet/subnet-b4ac29ee",
+                            "assign_ipv6_address_on_creation": "false",
+                            "availability_zone": "us-west-2c",
+                            "cidr_block": "10.193.87.64/27",
+                            "default_for_az": "false",
+                            "filter.#": "1",
+                            "filter.1697954082.name": "tag:Name",
+                            "filter.1697954082.values.#": "1",
+                            "filter.1697954082.values.1472856546": "Public2*",
+                            "id": "subnet-b4ac29ee",
+                            "map_public_ip_on_launch": "false",
+                            "state": "available",
+                            "tags.%": "1",
+                            "tags.Name": "Public2(us-west-2c)",
+                            "vpc_id": "vpc-63254f1a"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.aws_vpc.elmae": {
+                    "type": "aws_vpc",
+                    "depends_on": [],
+                    "primary": {
+                        "id": "vpc-63254f1a",
+                        "attributes": {
+                            "arn": "arn:aws:ec2:us-west-2:489867994332:vpc/vpc-63254f1a",
+                            "cidr_block": "10.193.87.0/24",
+                            "cidr_block_associations.#": "1",
+                            "cidr_block_associations.0.association_id": "vpc-cidr-assoc-6e89ba05",
+                            "cidr_block_associations.0.cidr_block": "10.193.87.0/24",
+                            "cidr_block_associations.0.state": "associated",
+                            "default": "false",
+                            "dhcp_options_id": "dopt-61148118",
+                            "enable_dns_hostnames": "false",
+                            "enable_dns_support": "true",
+                            "id": "vpc-63254f1a",
+                            "instance_tenancy": "default",
+                            "state": "available",
+                            "tags.%": "1",
+                            "tags.Name": "elmae-default"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.aws"
+                },
+                "data.template_file.active-instance-template": {
+                    "type": "template_file",
+                    "depends_on": [
+                        "aws_cloudwatch_log_group.accord-vault-log-group",
+                        "aws_dynamodb_table.accord-vault-dynamoDB",
+                        "aws_kms_key.accord-vault-kms-key",
+                        "aws_s3_bucket.accord-vault-bucket"
+                    ],
+                    "primary": {
+                        "id": "5023669f2d52f3ec4ac5607968e92375102ab298bd18684f3512325296704008",
+                        "attributes": {
+                            "id": "5023669f2d52f3ec4ac5607968e92375102ab298bd18684f3512325296704008",
+                            "rendered": "#!/bin/bash -v\nsudo yum update -y aws-cfn-bootstrap\nsudo yum update -y\nsudo mkdir /vault\ncd /vault\nsudo aws s3 cp s3://\"em-accord-vault-prod\"/\"zipfile.zip\" \"zipfile.zip\"\nsudo unzip \"zipfile.zip\"\nsudo chmod +x scripts/vault_build_active.sh\nsudo ./scripts/vault_build_active.sh \"em-accord-vault-prod\" \"26b5449c-5eff-402e-b87c-d87ea659ed4a\" \"em-accord-vault-us-west-2-prod-dynamoDB\" \"https://consul.us-west-2.accord.ellieservices.com\" \"7e48f0db-cc55-02e8-10a8-30b3404b6b4f\" \"accord-prod-vault\"\n",
+                            "template": "#!/bin/bash -v\nsudo yum update -y aws-cfn-bootstrap\nsudo yum update -y\nsudo mkdir /vault\ncd /vault\nsudo aws s3 cp s3://\"${BUCKET}\"/\"${ZIPFILE}\" \"${ZIPFILE}\"\nsudo unzip \"${ZIPFILE}\"\nsudo chmod +x scripts/vault_build_active.sh\nsudo ./scripts/vault_build_active.sh \"${BUCKET}\" \"${KMSKEY}\" \"${DYNAMO}\" \"${CONSUL}\" \"${CTOKEN}\" \"${LOGGROUPNAME}\"\n",
+                            "vars.%": "7",
+                            "vars.BUCKET": "em-accord-vault-prod",
+                            "vars.CONSUL": "https://consul.us-west-2.accord.ellieservices.com",
+                            "vars.CTOKEN": "7e48f0db-cc55-02e8-10a8-30b3404b6b4f",
+                            "vars.DYNAMO": "em-accord-vault-us-west-2-prod-dynamoDB",
+                            "vars.KMSKEY": "26b5449c-5eff-402e-b87c-d87ea659ed4a",
+                            "vars.LOGGROUPNAME": "accord-prod-vault",
+                            "vars.ZIPFILE": "zipfile.zip"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.template"
+                },
+                "data.template_file.add-user-sfn": {
+                    "type": "template_file",
+                    "depends_on": [
+                        "aws_lambda_function.aws_role_provision",
+                        "aws_lambda_function.vault_role_provision"
+                    ],
+                    "primary": {
+                        "id": "cc4851c4e467912e6d91569bfdfc73f366598f31cb997ec46ab725414998c591",
+                        "attributes": {
+                            "id": "cc4851c4e467912e6d91569bfdfc73f366598f31cb997ec46ab725414998c591",
+                            "rendered": "{\n  \"Comment\": \"State machine for adding a user to the vault to allow access to consul.\",\n  \"StartAt\": \"AWSRoleProvision\",\n  \"States\": {\n    \"AWSRoleProvision\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-role-provision\",\n      \"Next\": \"VaultRoleProvision\"\n    },\n    \"VaultRoleProvision\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-vault-user\",\n      \"Next\": \"JobComplete\"\n    },\n    \"JobComplete\": {\n      \"Type\": \"Pass\",\n      \"End\": true\n    }\n  }\n}",
+                            "template": "{\n  \"Comment\": \"State machine for adding a user to the vault to allow access to consul.\",\n  \"StartAt\": \"AWSRoleProvision\",\n  \"States\": {\n    \"AWSRoleProvision\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"${AWS_ROLE_PROVISION}\",\n      \"Next\": \"VaultRoleProvision\"\n    },\n    \"VaultRoleProvision\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"${VAULT_ROLE_PROVISION}\",\n      \"Next\": \"JobComplete\"\n    },\n    \"JobComplete\": {\n      \"Type\": \"Pass\",\n      \"End\": true\n    }\n  }\n}",
+                            "vars.%": "2",
+                            "vars.AWS_ROLE_PROVISION": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-role-provision",
+                            "vars.VAULT_ROLE_PROVISION": "arn:aws:lambda:us-west-2:489867994332:function:em-accord-vault-prod-add-vault-user"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.template"
+                },
+                "data.template_file.passive-instance-template": {
+                    "type": "template_file",
+                    "depends_on": [
+                        "aws_cloudwatch_log_group.accord-vault-log-group",
+                        "aws_dynamodb_table.accord-vault-dynamoDB",
+                        "aws_kms_key.accord-vault-kms-key",
+                        "aws_s3_bucket.accord-vault-bucket"
+                    ],
+                    "primary": {
+                        "id": "1df2262bc60d553808a1183f64222b8debb3919f248b047938e7689cbe916e17",
+                        "attributes": {
+                            "id": "1df2262bc60d553808a1183f64222b8debb3919f248b047938e7689cbe916e17",
+                            "rendered": "#!/bin/bash -v\nsudo yum update -y aws-cfn-bootstrap\nsudo yum update -y\nsudo mkdir /vault\ncd /vault\nsudo aws s3 cp s3://\"em-accord-vault-prod\"/\"zipfile.zip\" \"zipfile.zip\"\nsudo unzip \"zipfile.zip\"\nsudo chmod +x scripts/vault_build_passive.sh\nsudo ./scripts/vault_build_passive.sh \"em-accord-vault-prod\" \"26b5449c-5eff-402e-b87c-d87ea659ed4a\" \"em-accord-vault-us-west-2-prod-dynamoDB\" \"accord-prod-vault\"\n",
+                            "template": "#!/bin/bash -v\nsudo yum update -y aws-cfn-bootstrap\nsudo yum update -y\nsudo mkdir /vault\ncd /vault\nsudo aws s3 cp s3://\"${BUCKET}\"/\"${ZIPFILE}\" \"${ZIPFILE}\"\nsudo unzip \"${ZIPFILE}\"\nsudo chmod +x scripts/vault_build_passive.sh\nsudo ./scripts/vault_build_passive.sh \"${BUCKET}\" \"${KMSKEY}\" \"${DYNAMO}\" \"${LOGGROUPNAME}\"\n",
+                            "vars.%": "5",
+                            "vars.BUCKET": "em-accord-vault-prod",
+                            "vars.DYNAMO": "em-accord-vault-us-west-2-prod-dynamoDB",
+                            "vars.KMSKEY": "26b5449c-5eff-402e-b87c-d87ea659ed4a",
+                            "vars.LOGGROUPNAME": "accord-prod-vault",
+                            "vars.ZIPFILE": "zipfile.zip"
+                        },
+                        "meta": {},
+                        "tainted": false
+                    },
+                    "deposed": [],
+                    "provider": "provider.template"
+                }
+            },
+            "depends_on": []
+        }
+    ]
+}
