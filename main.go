@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"flag"
@@ -22,6 +23,7 @@ import (
 )
 
 func downloadGithubRepo(organization string, repo string) {
+	fmt.Printf("Downloading %s repo from github\n", repo)
 	client := github.NewClient(nil)
 	repository, _, err := client.Repositories.Get(context.Background(), organization, repo)
 	if err != nil {
@@ -32,6 +34,9 @@ func downloadGithubRepo(organization string, repo string) {
 	g.Get(repo, url)
 }
 
+/*This method reads the provider from a local folder and returns a list of all terraform
+resource and terrafrom data resource files
+*/
 func getAllTerraformResourceFiles(repo string) []string {
 	var paths []string
 	filepath.Walk(fmt.Sprint("./", repo), func(path string, file os.FileInfo, err error) error {
@@ -47,14 +52,17 @@ func getAllTerraformResourceFiles(repo string) []string {
 	return paths
 }
 
+/*This method reads a state file given by a path and returns a slice of all the
+terraform resources it uses (for the given provider, based on a cache).
+*/
 func listUniqueResources(statePath string, provider string) []string {
 	cmdOutput := execTerraformStateList(statePath)
 	searchExpression := fmt.Sprintf(`%s_(.*?)[^.]+`, provider)
 	re := regexp.MustCompile(searchExpression)
 	resourceMatches := re.FindAllString(cmdOutput, -1)
 	resourceSet := make(map[string]bool)
-	fmt.Printf("matches: %d", len(resourceMatches))
 	for _, resource := range resourceMatches {
+		fmt.Println(resource)
 		resourceSet[resource] = true
 	}
 	//convert set into slice
@@ -65,25 +73,11 @@ func listUniqueResources(statePath string, provider string) []string {
 	return keys
 }
 
-/*
-func parseStateFile(statePath string) []string {
-	dat, _ := ioutil.ReadFile(statePath)
-	var tmpM map[string]interface{}
-	json.Unmarshal(dat, &tmpM)
-	m := make(map[string][]string, len(tmpM))
-	for k, v := range tmpM {
-		tmp := v.([]interface{})
-		newV := make([]string, len(tmp))
-		for i, el := range tmp {
-			newV[i] = el.(string)
-		}
-		m[k] = newV
-	}
-	return m
-}*/
-
+/*Wrapper around the "terraform state list" command. Could be modified to also handle
+"terraform graph", which could be useful if turning this into a proper terraform provider
+*/
 func execTerraformStateList(statePath string) string {
-	const maxBufSize = 8 * 1024
+	const maxBufSize = 16 * 1024
 	// Execute the command using a shell
 	var shell, flag string
 	if runtime.GOOS == "windows" {
@@ -103,6 +97,9 @@ func execTerraformStateList(statePath string) string {
 	return stdout.String()
 }
 
+/*Rebuild a cache for mapping terraform resource names to actions. This should
+not be run often, it is usually enough to simply use the cached json file.
+*/
 func generateResourceMap(organization string, provider string) {
 	repo := fmt.Sprintf("terraform-provider-%s", provider)
 	downloadGithubRepo(organization, repo)
@@ -116,7 +113,7 @@ func generateResourceMap(organization string, provider string) {
 		dat, _ := ioutil.ReadFile(path)
 		s := string(dat)
 		clients := re.FindAllString(s, -1)
-		fmt.Printf("clients match: %v\n", clients)
+		//fmt.Printf("clients match: %v\n", clients)
 		for _, client := range clients {
 			part := strings.Split(client, ":=")[0]
 			variableName := strings.TrimSpace(part)
@@ -145,6 +142,13 @@ func generateResourceMap(organization string, provider string) {
 				action := fmt.Sprintf("%s:%s", serviceName, api)
 				apiSet[action] = true
 			}
+			//add "hidden" actions for each resource of a service
+			if actions, ok := awsHiddenActionsMap[serviceName]; ok {
+				for _, action := range actions {
+					apiSet[action] = true
+				}
+			}
+
 			//convert set into slice
 			keys := make([]string, 0, len(apiSet))
 			for k := range apiSet {
@@ -156,14 +160,17 @@ func generateResourceMap(organization string, provider string) {
 
 		}
 	}
+	//Write the output to a file for caching
 	bytes, _ := json.Marshal(m)
-	resourceFileName := fmt.Sprintf("%s_resouce.json", provider)
+	resourceFileName := fmt.Sprintf("%s_resouce_mapping.json", provider)
 	os.Remove(resourceFileName)
 	ioutil.WriteFile(resourceFileName, bytes, 0644)
 }
 
+/*Parse the cached file into a golang map[string][]string
+ */
 func deserializeResourceMap(provider string) map[string][]string {
-	resourceFileName := fmt.Sprintf("%s_resouce.json", provider)
+	resourceFileName := fmt.Sprintf("%s_resouce_mapping.json", provider)
 	dat, _ := ioutil.ReadFile(resourceFileName)
 	var tmpM map[string]interface{}
 	json.Unmarshal(dat, &tmpM)
@@ -179,20 +186,58 @@ func deserializeResourceMap(provider string) map[string][]string {
 	return m
 }
 
+/*Spit out a policy document based on a list of resources that are being used
+ */
 func createPolicyDocument(resourceList []string, provider string) string {
 	m := deserializeResourceMap(provider)
 	actionSet := make(map[string]bool)
+	fmt.Println("######### New Policy")
+
+	//add common actions that will be needed for every policy
+	for _, action := range awsCommonActions {
+		actionSet[action] = true
+	}
+
 	for _, resource := range resourceList {
-		fmt.Println("resource: " + resource)
+		//fmt.Println("resource: " + resource)
 		resourceName := "resource_" + resource
+		dataResourceName := "data_source_" + resource
+
 		var actions []string
-		if val, ok := m[resourceName]; ok {
-			actions = val
-		} else {
-			resourceName = "data_source_" + resource
-			actions = m[resourceName]
+		resourceActions, rOk := m[resourceName]
+		dataResourceActions, dOk := m[dataResourceName]
+		//Terraform state list does not make a distinction between data resources and regular resource
+		if rOk && dOk {
+			fmt.Printf("Indeterminate: " + resource + "\n")
+			validText := false
+			scanner := bufio.NewScanner(os.Stdin)
+			for !validText {
+				fmt.Print("Select [r]esource or [d]ata resource: ")
+				scanner.Scan()
+				text := scanner.Text()
+				if text == "r" {
+					actions = resourceActions
+					validText = true
+				} else if text == "d" {
+					actions = dataResourceActions
+					validText = true
+				}
+			}
+		} else if rOk {
+			actions = resourceActions
+		} else if dOk {
+			actions = dataResourceActions
 		}
 		for _, action := range actions {
+			//is this an add action that we need to account for?
+			if val, ok := awsIdiosyncracyActionMap[action]; ok {
+				if len(val) > 0 {
+					for _, v := range val {
+						actionSet[v] = true
+					}
+				}
+				continue
+			}
 			actionSet[action] = true
 		}
 	}
@@ -203,14 +248,28 @@ func createPolicyDocument(resourceList []string, provider string) string {
 	}
 	//sort alphabetically
 	sort.Sort(sort.StringSlice(keys))
-	policy := "[" + strings.Join(keys, ", ") + "]"
-	fmt.Println(policy)
+	policyActions := "[" + strings.Join(keys, ", ") + "]"
+	policy := fmt.Sprintf(`
+	{
+		"Version": "2012-10-17",
+		"Statement": [
+			{
+				"Effect": "Allow",
+				"Action": %s,
+				"Resource": "*"
+			}
+		]
+	}
+	`, policyActions)
+	//Write output to file
 	resourceFileName := fmt.Sprintf("%s_policy.json", provider)
 	os.Remove(resourceFileName)
 	ioutil.WriteFile(resourceFileName, []byte(policy), 0644)
+	fmt.Printf("######### Policy created: %s\n", resourceFileName)
 	return policy
 }
 
+//helper function for validating that a file is a terraform resource or data resource
 func isTerraformResourceFile(fileName string) bool {
 	//must be a go file
 	if !strings.HasSuffix(fileName, ".go") {
@@ -239,14 +298,114 @@ func main() {
 	provider := *providerPtr
 	useCache := *useCachePtr
 	organization := *organizationPtr
-	fmt.Println("state: " + statePath)
 	if !useCache {
+		fmt.Println("invalidating cache")
 		generateResourceMap(organization, provider)
 	}
 	resourceList := listUniqueResources(statePath, provider)
 	createPolicyDocument(resourceList, provider)
 }
 
+/*a list of actions that should be included for all deployments.
+These represent the set of actions that are non resource-specific
+and therefore cannot be known simply by parsing the state file
+*/
+var awsCommonActions = []string{
+	//
+}
+
+/*actions that need to be included for particular services
+but is not exactly clear to which resource they belong. Additional
+research could be done to find out exactly where these should go */
+var awsHiddenActionsMap = map[string][]string{
+	"ec2":     []string{"ec2:DescribeVpcAttribute", "ec2:DescribeRouteTables", "ec2:DescribeAccountAttributes"},
+	"route53": []string{"route53:GetChange"},
+	"iam":     []string{"iam:PassRole"},
+	"lambda":  []string{"lambda:ListVersionsByFunction"},
+	"s3":      []string{"s3:GetBucketTagging"},
+}
+
+/*The naming of the api methods does not map always to sensible iam
+actions. This map is used to resolve some of the inconsistencies of the aws sdk
+*/
+var awsIdiosyncracyActionMap = map[string][]string{
+	"apigateway:CreateAuthorizer":           []string{"apigateway:*"},
+	"apigateway:CreateModel":                []string{"apigateway:*"},
+	"apigateway:CreateResource":             []string{"apigateway:*"},
+	"apigateway:CreateRestApi":              []string{"apigateway:*"},
+	"apigateway:DeleteAuthorizer":           []string{"apigateway:*"},
+	"apigateway:DeleteGatewayResponse":      []string{"apigateway:*"},
+	"apigateway:DeleteIntegration":          []string{"apigateway:*"},
+	"apigateway:DeleteIntegrationResponse":  []string{"apigateway:*"},
+	"apigateway:DeleteMethod":               []string{"apigateway:*"},
+	"apigateway:DeleteMethodResponse":       []string{"apigateway:*"},
+	"apigateway:DeleteModel":                []string{"apigateway:*"},
+	"apigateway:DeleteResource":             []string{"apigateway:*"},
+	"apigateway:DeleteRestApi":              []string{"apigateway:*"},
+	"apigateway:GetAuthorizer":              []string{"apigateway:*"},
+	"apigateway:GetGatewayResponse":         []string{"apigateway:*"},
+	"apigateway:GetIntegration":             []string{"apigateway:*"},
+	"apigateway:GetIntegrationResponse":     []string{"apigateway:*"},
+	"apigateway:GetMethod":                  []string{"apigateway:*"},
+	"apigateway:GetMethodResponse":          []string{"apigateway:*"},
+	"apigateway:GetModel":                   []string{"apigateway:*"},
+	"apigateway:GetResource":                []string{"apigateway:*"},
+	"apigateway:GetResourcesPages":          []string{"apigateway:*"},
+	"apigateway:GetRestApi":                 []string{"apigateway:*"},
+	"apigateway:PutGatewayResponse":         []string{"apigateway:*"},
+	"apigateway:PutIntegration":             []string{"apigateway:*"},
+	"apigateway:PutIntegrationResponse":     []string{"apigateway:*"},
+	"apigateway:PutMethod":                  []string{"apigateway:*"},
+	"apigateway:PutMethodResponse":          []string{"apigateway:*"},
+	"apigateway:PutRestApi":                 []string{"apigateway:*"},
+	"apigateway:UpdateAuthorizer":           []string{"apigateway:*"},
+	"apigateway:UpdateIntegration":          []string{"apigateway:*"},
+	"apigateway:UpdateMethod":               []string{"apigateway:*"},
+	"apigateway:UpdateMethodResponse":       []string{"apigateway:*"},
+	"apigateway:UpdateModel":                []string{"apigateway:*"},
+	"apigateway:UpdateResource":             []string{"apigateway:*"},
+	"apigateway:UpdateRestApi":              []string{"apigateway:*"},
+	"apigateway:CreateBasePathMapping":      []string{"apigateway:*"},
+	"apigateway:CreateDeployment":           []string{"apigateway:*"},
+	"apigateway:CreateDomainName":           []string{"apigateway:*"},
+	"apigateway:DeleteBasePathMapping":      []string{"apigateway:*"},
+	"apigateway:DeleteDeployment":           []string{"apigateway:*"},
+	"apigateway:DeleteDomainName":           []string{"apigateway:*"},
+	"apigateway:DeleteStage":                []string{"apigateway:*"},
+	"apigateway:GetAccount":                 []string{"apigateway:*"},
+	"apigateway:GetBasePathMapping":         []string{"apigateway:*"},
+	"apigateway:GetDeployment":              []string{"apigateway:*"},
+	"apigateway:GetDomainName":              []string{"apigateway:*"},
+	"apigateway:GetStage":                   []string{"apigateway:*"},
+	"apigateway:UpdateAccount":              []string{"apigateway:*"},
+	"apigateway:UpdateDeployment":           []string{"apigateway:*"},
+	"apigateway:UpdateDomainName":           []string{"apigateway:*"},
+	"cloudfront:CreateDistributionWithTags": []string{"cloudfront:TagResource", "cloudfront:CreateDistribution", "cloudfront:CreateDistributionWithTags"},
+	"iam:ListAttachedRolePoliciesPages":     []string{"iam:ListAttachedRolePolicies"},
+	"iam:ListEntitiesForPolicyPages":        []string{"iam:ListEntitiesForPolicy"},
+	"iam:ListRolePoliciesPages":             []string{"iam:ListRolePolicies"},
+	"route53:ListResourceRecordSetsPages":   []string{"route53:ListResourceRecordSets"},
+	"s3:DeleteBucketCors":                   []string{},
+	"s3:DeleteBucketEncryption":             []string{},
+	"s3:DeleteBucketLifecycle":              []string{},
+	"s3:DeleteBucketReplication":            []string{},
+	"s3:DeleteObjects":                      []string{"s3:DeleteObject"},
+	"s3:GetBucketAccelerateConfiguration":   []string{"s3:GetAccelerateConfiguration"},
+	"s3:GetBucketEncryption":                []string{"s3:GetEncryptionConfiguration"},
+	"s3:GetBucketLifecycleConfiguration":    []string{"s3:GetLifecycleConfiguration"},
+	"s3:GetBucketReplication":               []string{"s3:GetReplicationConfiguration"},
+	"s3:HeadObject":                         []string{"s3:GetObject"},
+	"s3:HeadBucket":                         []string{"s3:HeadBucket", "s3:ListBucket"},
+	"s3:ListObjectVersions":                 []string{"s3:GetObjectVersion"},
+	"s3:PutBucketAccelerateConfiguration":   []string{"s3:PutAccelerateConfiguration"},
+	"s3:PutBucketEncryption":                []string{"s3:PutEncryptionConfiguration"},
+	"s3:PutBucketLifecycleConfiguration":    []string{"s3:PutLifecycleConfiguration"},
+	"s3:PutBucketReplication":               []string{"s3:PutReplicationConfiguration"},
+}
+
+/* This maps the connection client object instantianted in the terraform-provider-aws
+to the name of the service, which will be used to construct the appropriate iam action
+*/
 var awsClientMap = map[string]string{
 	"cfconn":                "cloudformation",
 	"cloud9conn":            "cloud9",
