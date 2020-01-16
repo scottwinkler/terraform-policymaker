@@ -1,7 +1,7 @@
 # terraform-policymaker
 This project solves the problem of creating a least priviliged policy for terraform deployments. If you have ever had to sift through logs files to know exactly what your priviliges you need to grant your terraform provider, then you will appreciate this.
 ## How to use
-First build this project using `go build`, then run `./terraform-policymaker -path=<path_to_tf_config>` to generate a least priviliged policy for your configuration code.
+First build this project using `go build`, then run `./terraform-policymaker -path="<path_to_tf_config>"` to generate a least priviliged policy for your configuration code.
 Arguments
 * -path: (optional) The path to your Terraform configuration files. Default: ./test
 * -provider: (optional) N/A as currently only aws is supported. Default: aws
